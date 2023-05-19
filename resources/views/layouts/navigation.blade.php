@@ -15,6 +15,23 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    @if(Auth::check())
+                        <x-nav-link :href="route('productos.index')" :active="request()->routeIs(['productos.index'])">
+                            {{ __('Productos') }}
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('marcas.index')" :active="request()->routeIs(['marcas.index'])">
+                            {{ __('Marcas') }}
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('tipos.index')" :active="request()->routeIs(['tipos.index'])">
+                            {{ __('Tipos') }}
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('talles.index')" :active="request()->routeIs(['talles.index'])">
+                            {{ __('Talles') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 

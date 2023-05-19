@@ -43,12 +43,15 @@ class TalleController extends Controller
      */
     public function store(Request $request)
     {
-        request()->validate(Talle::$rules);
-
-        $talle = Talle::create($request->all());
-
-        return redirect()->route('talles.index')
-            ->with('success', 'Talle created successfully.');
+        try {
+            request()->validate(Talle::$rules);
+            $talle = Talle::create($request->all());
+            return redirect()->route('talles.index')
+                ->with('success', 'Talle creado con exito.');        
+        } catch (\Throwable $th) {
+            return redirect()->route('talles.index')
+                ->with('error', 'Ya existe un talle con ese nombre.');        
+        }
     }
 
     /**
@@ -86,12 +89,15 @@ class TalleController extends Controller
      */
     public function update(Request $request, Talle $talle)
     {
-        request()->validate(Talle::$rules);
-
-        $talle->update($request->all());
-
-        return redirect()->route('talles.index')
-            ->with('success', 'Talle updated successfully');
+        try {
+            request()->validate(Talle::$rules);
+            $talle->update($request->all());
+            return redirect()->route('talles.index')
+                ->with('success', 'Talle actualizado con exito');        
+        } catch (\Throwable $th) {
+            return redirect()->route('talles.index')
+                ->with('error', 'Ya existe un talle con ese nombre.');        
+        }
     }
 
     /**
@@ -101,9 +107,19 @@ class TalleController extends Controller
      */
     public function destroy($id)
     {
-        $talle = Talle::find($id)->delete();
+        $talle = Talle::find($id);
+        $talle->activo = false;
+        $talle->save();
 
         return redirect()->route('talles.index')
-            ->with('success', 'Talle deleted successfully');
+            ->with('success', 'Talle eliminado con exito');
+    }
+
+    //API
+
+    public function indexApi()
+    {
+        $talles =  Talle::where('activo', true)->get();
+        return $talles;
     }
 }

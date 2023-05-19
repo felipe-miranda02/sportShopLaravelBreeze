@@ -23,10 +23,9 @@ class Talle extends Model
     
     static $rules = [
 		'name' => 'required',
-		'activo' => 'required',
     ];
 
-    protected $perPage = 20;
+    protected $perPage = 5;
 
     /**
      * Attributes that should be mass-assignable.

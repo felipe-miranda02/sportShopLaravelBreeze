@@ -1,8 +1,9 @@
-@extends('layouts.app')
-
-@section('template_title')
-    {{ $talle->name ?? "{{ __('Show') Talle" }}
-@endsection
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight dark:bg-gray-700">
+            {{ __('Talles') }}
+        </h2>
+    </x-slot>
 
 @section('content')
     <section class="content container-fluid">
@@ -35,3 +36,4 @@
         </div>
     </section>
 @endsection
+</x-app-layout>

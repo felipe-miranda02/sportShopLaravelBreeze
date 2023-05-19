@@ -1,5 +1,9 @@
 <x-app-layout>
-    
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight dark:bg-gray-700">
+            {{ __('Talles') }}
+        </h2>
+    </x-slot>
     @section('content')
     <div class="container-fluid">
         <div class="row">
@@ -14,7 +18,7 @@
 
                              <div class="float-right">
                                 <a href="{{ route('talles.create') }}" class="btn btn-primary btn-sm float-right"  data-placement="left">
-                                  {{ __('Create New') }}
+                                  {{ __('Nuevo') }}
                                 </a>
                               </div>
                         </div>
@@ -24,7 +28,11 @@
                             <p>{{ $message }}</p>
                         </div>
                     @endif
-
+                    @if ($message = Session::get('error'))
+                        <div class="alert alert-danger">
+                            <p>{{ $message }}</p>
+                        </div>
+                    @endif
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table table-striped table-hover">
@@ -32,7 +40,7 @@
                                     <tr>
                                         <th>No</th>
                                         
-										<th>Name</th>
+										<th>Nombre</th>
 										<th>Activo</th>
 
                                         <th></th>
@@ -44,15 +52,22 @@
                                             <td>{{ ++$i }}</td>
                                             
 											<td>{{ $talle->name }}</td>
-											<td>{{ $talle->activo }}</td>
+
+											<td>
+                                                @if ($talle->activo == 1)
+                                                    si
+                                                @endif
+                                                @if ($talle->activo == 0)
+                                                    no
+                                                @endif
+                                            </td>
 
                                             <td>
                                                 <form action="{{ route('talles.destroy',$talle->id) }}" method="POST">
-                                                    <a class="btn btn-sm btn-primary " href="{{ route('talles.show',$talle->id) }}"><i class="fa fa-fw fa-eye"></i> {{ __('Show') }}</a>
-                                                    <a class="btn btn-sm btn-success" href="{{ route('talles.edit',$talle->id) }}"><i class="fa fa-fw fa-edit"></i> {{ __('Edit') }}</a>
+                                                    <a class="btn btn-sm btn-success" href="{{ route('talles.edit',$talle->id) }}"><i class="fa fa-fw fa-edit"></i> {{ __('Editar') }}</a>
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-fw fa-trash"></i> {{ __('Delete') }}</button>
+                                                    <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-fw fa-trash"></i> {{ __('Eliminar') }}</button>
                                                 </form>
                                             </td>
                                         </tr>
