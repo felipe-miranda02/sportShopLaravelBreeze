@@ -28,4 +28,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::resource('talles', App\Http\Controllers\TalleController::class);
+Route::resource('marcas', App\Http\Controllers\MarcaController::class)->middleware('auth','verified');
+Route::resource('tipos', App\Http\Controllers\TipoController::class)->middleware('auth','verified');
+Route::resource('productos', App\Http\Controllers\ProductoController::class)->middleware('auth','verified');
+
 require __DIR__.'/auth.php';
