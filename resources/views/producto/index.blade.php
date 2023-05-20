@@ -1,10 +1,9 @@
-@extends('layouts.app')
-
-@section('template_title')
-    Producto
-@endsection
-
-@section('content')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight dark:bg-gray-700">
+            {{ __('Productos') }}
+        </h2>
+    </x-slot>
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-12">
@@ -16,11 +15,60 @@
                                 {{ __('Producto') }}
                             </span>
 
-                             <div class="float-right">
-                                <a href="{{ route('productos.create') }}" class="btn btn-primary btn-sm float-right"  data-placement="left">
-                                  {{ __('Create New') }}
+                            @php
+                                $marca = request()->input('marca');
+                                $tipo = request()->input('tipo');
+                            @endphp
+
+                            <div class="dropdown">
+                                <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                @if ($marca != null)
+                                    {{$marca}} 
+                                @else
+                                    Marca
+                                @endif
                                 </a>
-                              </div>
+                            
+                                <ul class="dropdown-menu">
+                                    @if ($marca != null)
+                                        <li><a class="dropdown-item" href="{{ route('productos.index', ['tipo' => $tipo]) }}">Marca</a></li> 
+                                    @endif 
+
+                                    @foreach ($marcas as $m) 
+                                    @if ($marca != $m->name)
+                                        <li><a class="dropdown-item" href="{{ route('productos.index', ['marca' => $m->name,'tipo' => $tipo]) }}">{{$m->name}}</a></li>
+                                    @endif
+                                    @endforeach
+                                </ul>
+                            </div>
+
+                            <div class="dropdown">
+                                <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    @if ($tipo != null)
+                                        {{$tipo}} 
+                                    @else
+                                        Tipo
+                                    @endif
+                                </a>
+                            
+                                <ul class="dropdown-menu">
+                                    @if ($tipo != null)
+                                        <li><a class="dropdown-item" href="{{ route('productos.index', ['marca' => $marca]) }}">Tipo</a></li> 
+                                    @endif 
+                                    @foreach ($tipos as $t) 
+                                    @if ($tipo != $t->name)
+                                        <li><a class="dropdown-item" href="{{ route('productos.index', ['marca' => $marca, 'tipo' => $t->name]) }}">{{$t->name}}</a></li>
+                                    @endif
+                                    @endforeach
+                                </ul>
+                            </div>
+                    
+                            <div class="float-right" style="margin: 1rem">
+                                <a href="{{ route('productos.create') }}" class="btn btn-primary btn-sm float-right"  data-placement="left">
+                                {{ __('Nuevo') }}
+                                </a>
+                            </div>
+
                         </div>
                     </div>
                     @if ($message = Session::get('success'))
@@ -30,54 +78,44 @@
                     @endif
 
                     <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-striped table-hover">
-                                <thead class="thead">
-                                    <tr>
-                                        <th>No</th>
-                                        
-										<th>Name</th>
-										<th>Descripcion</th>
-										<th>Urlimagen</th>
-										<th>Precio</th>
-										<th>Activo</th>
-										<th>Tipo Id</th>
-										<th>Marca Id</th>
-
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($productos as $producto)
-                                        <tr>
-                                            <td>{{ ++$i }}</td>
-                                            
-											<td>{{ $producto->name }}</td>
-											<td>{{ $producto->descripcion }}</td>
-											<td>{{ $producto->URLimagen }}</td>
-											<td>{{ $producto->precio }}</td>
-											<td>{{ $producto->activo }}</td>
-											<td>{{ $producto->tipo_id }}</td>
-											<td>{{ $producto->marca_id }}</td>
-
-                                            <td>
-                                                <form action="{{ route('productos.destroy',$producto->id) }}" method="POST">
-                                                    <a class="btn btn-sm btn-primary " href="{{ route('productos.show',$producto->id) }}"><i class="fa fa-fw fa-eye"></i> {{ __('Show') }}</a>
-                                                    <a class="btn btn-sm btn-success" href="{{ route('productos.edit',$producto->id) }}"><i class="fa fa-fw fa-edit"></i> {{ __('Edit') }}</a>
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-fw fa-trash"></i> {{ __('Delete') }}</button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+                                <div class="table-responsive">
+                                    <div class="container">
+                                        <div class="row row-cols-auto">
+                                        @foreach ($productos as $producto) 
+                                            <div class="card col col-sm-6" style="width: 18rem; margin: 1rem">
+                                                <div class="card-img-top">
+                                                    <img src="{{ $producto->URLimagen }}" class="card-img-top" width="100" height="300" alt="Imagen del producto">
+                                                </div>
+                                                <div class="card-body">
+                                                    <h3 class="card-title">{{ $producto->name }}</h3>
+                                                    <p class="card-text"><samp style="font-weight: bold; font-size: medium">Activo: </samp>
+                                                        @if ($producto->activo == 1)
+                                                            si
+                                                        @endif
+                                                        @if ($producto->activo == 0)
+                                                            no
+                                                        @endif
+                                                    </p>
+                                                    <p class="card-text"><samp style="font-weight: bold; font-size: medium">Precio: </samp>{{ $producto->precio }}</p>
+                                                    <p class="card-text"><samp style="font-weight: bold; font-size: medium">Tipo: </samp>{{ $producto->tipo->name }}</p>
+                                                    <p class="card-text"><samp style="font-weight: bold; font-size: medium">Marca: </samp>{{ $producto->marca->name }}</p>
+                                                    <p class="card-text"><samp style="font-weight: bold; font-size: medium">Descripcion: </samp>{{ $producto->descripcion }}</p>
+                                                    <form action="{{ route('productos.destroy',$producto->id) }}" method="POST">
+                                                        <a class="btn btn-sm btn-success" href="{{ route('productos.edit',$producto->id) }}"><i class="fa fa-fw fa-edit"></i> {{ __('Editar') }}</a>
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-fw fa-trash"></i> {{ __('Eliminar') }}</button>
+                                                    </form>                            
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                        </div>
+                                    </div>
+                                </div>
                     </div>
                 </div>
                 {!! $productos->links() !!}
             </div>
         </div>
     </div>
-@endsection
+</x-app-layout>

@@ -15,7 +15,7 @@ class HistorialCompraTableSeeder extends Seeder
         $historialCompra1->precio = '8499';
         $historialCompra1->fecha = '2023-05-04 09:05:20';
         $historialCompra1->cliente_id = '1';
-        $historialCompra1->producto_id = '35';
+        $historialCompra1->producto_id = '15';
         $historialCompra1->cantidad = '3';
         $historialCompra1->talle_id = '1';
         $historialCompra1->save();

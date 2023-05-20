@@ -17,13 +17,13 @@ class DatabaseSeeder extends Seeder
         $this->call([
             
             UserTableSeeder::class,
-            //ClienteTableSeeder::class,
+            ClienteTableSeeder::class,
             MarcasTableSeeder::class,
             TipoTableSeeder::class,
             TalleTableSeeder::class,
-            //ProductosTableSeeder::class,
-            //CompraTableSeeder::class,
-            //HistorialCompraTableSeeder::class
+            ProductosTableSeeder::class,
+            CompraTableSeeder::class,
+            HistorialCompraTableSeeder::class
 
         ]);
     }

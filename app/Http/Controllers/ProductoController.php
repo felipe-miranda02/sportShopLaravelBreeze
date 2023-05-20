@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Producto;
+use App\Models\Marca;
+use App\Models\Tipo;
 use Illuminate\Http\Request;
 
 /**
@@ -18,9 +20,33 @@ class ProductoController extends Controller
      */
     public function index()
     {
-        $productos = Producto::paginate();
+        $tipos = Tipo::all();
+        $marcas = Marca::all();
 
-        return view('producto.index', compact('productos'))
+        $marca = request()->input('marca');
+        $tipo = request()->input('tipo');
+
+        $marcaId = null;
+        $tipoId = null;
+        if($marca != null){
+            $marcaId = Marca::where('name', $marca)->get()[0]->id;
+        }
+        if($tipo != null){
+            $tipoId = Tipo::where('name', $tipo)->get()[0]->id;
+        }
+
+        $productos = null;
+        if($marcaId != null and $tipoId != null){
+            $productos = Producto::where('marca_id', $marcaId)->where('tipo_id', $tipoId)->paginate();
+        } else if($tipoId != null){
+            $productos = Producto::where('tipo_id', $tipoId)->paginate();
+        } else if($marcaId != null){
+            $productos = Producto::where('marca_id', $marcaId)->paginate();
+        } else{
+            $productos = Producto::paginate();
+        }
+
+        return view('producto.index', compact('productos', 'tipos', 'marcas'))
             ->with('i', (request()->input('page', 1) - 1) * $productos->perPage());
     }
 
@@ -32,7 +58,9 @@ class ProductoController extends Controller
     public function create()
     {
         $producto = new Producto();
-        return view('producto.create', compact('producto'));
+        $tipo = Tipo::where('activo', true)->pluck('name', 'id');
+        $marca = Marca::where('activo', true)->pluck('name', 'id');
+        return view('producto.create', compact('producto', 'tipo', 'marca'));
     }
 
     /**
@@ -48,7 +76,7 @@ class ProductoController extends Controller
         $producto = Producto::create($request->all());
 
         return redirect()->route('productos.index')
-            ->with('success', 'Producto created successfully.');
+            ->with('success', 'Producto creado con exito.');
     }
 
     /**
@@ -73,8 +101,9 @@ class ProductoController extends Controller
     public function edit($id)
     {
         $producto = Producto::find($id);
-
-        return view('producto.edit', compact('producto'));
+        $tipo = Tipo::where('activo', true)->pluck('name', 'id');
+        $marca = Marca::where('activo', true)->pluck('name', 'id');
+        return view('producto.edit', compact('producto', 'tipo', 'marca'));
     }
 
     /**
@@ -91,7 +120,7 @@ class ProductoController extends Controller
         $producto->update($request->all());
 
         return redirect()->route('productos.index')
-            ->with('success', 'Producto updated successfully');
+            ->with('success', 'Producto actualizado con exito');
     }
 
     /**
@@ -101,9 +130,18 @@ class ProductoController extends Controller
      */
     public function destroy($id)
     {
-        $producto = Producto::find($id)->delete();
-
+        $producto = Producto::find($id);
+        $producto->activo = false;
+        $producto->save();
+        
         return redirect()->route('productos.index')
-            ->with('success', 'Producto deleted successfully');
+            ->with('success', 'Producto eliminado con exito');
+    }
+
+    //API
+    public function indexApi()
+    {
+        $productos =  Producto::where('activo', true)->get();
+        return $productos;
     }
 }

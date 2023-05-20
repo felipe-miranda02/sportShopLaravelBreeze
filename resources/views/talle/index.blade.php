@@ -4,7 +4,6 @@
             {{ __('Talles') }}
         </h2>
     </x-slot>
-    @section('content')
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-12">
@@ -81,5 +80,4 @@
             </div>
         </div>
     </div>
-    @endsection
 </x-app-layout>

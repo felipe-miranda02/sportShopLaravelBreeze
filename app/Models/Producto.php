@@ -33,12 +33,11 @@ class Producto extends Model
 		'descripcion' => 'required',
 		'URLimagen' => 'required',
 		'precio' => 'required',
-		'activo' => 'required',
 		'tipo_id' => 'required',
 		'marca_id' => 'required',
     ];
 
-    protected $perPage = 20;
+    protected $perPage = 10;
 
     /**
      * Attributes that should be mass-assignable.

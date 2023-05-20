@@ -37,7 +37,7 @@ class CompraTableSeeder extends Seeder
         $compra4 = new Compra;
         $compra4->id = '4';
         $compra4->cliente_id = '3';
-        $compra4->producto_id = '28';
+        $compra4->producto_id = '18';
         $compra4->talle_id = '3';
         $compra4->cantidad = '1';
         $compra4->save();
@@ -45,7 +45,7 @@ class CompraTableSeeder extends Seeder
         $compra5 = new Compra;
         $compra5->id = '5';
         $compra5->cliente_id = '4';
-        $compra5->producto_id = '39';
+        $compra5->producto_id = '19';
         $compra5->talle_id = '2';
         $compra5->cantidad = '3';
         $compra5->save();
