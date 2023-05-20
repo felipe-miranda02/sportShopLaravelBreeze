@@ -2,13 +2,13 @@
     <div class="box-body">
         
         <div class="form-group">
-            {{ Form::label('name') }}
-            {{ Form::text('name', $marca->name, ['class' => 'form-control' . ($errors->has('name') ? ' is-invalid' : ''), 'placeholder' => 'Name']) }}
+            {{ Form::label('Nombre') }}
+            {{ Form::text('name', $marca->name, ['class' => 'form-control' . ($errors->has('name') ? ' is-invalid' : ''), 'placeholder' => 'Nombre', 'required' => 'required']) }}
             {!! $errors->first('name', '<div class="invalid-feedback">:message</div>') !!}
         </div>
         <div class="form-group">
-            {{ Form::label('activo') }}
-            {{ Form::text('activo', $marca->activo, ['class' => 'form-control' . ($errors->has('activo') ? ' is-invalid' : ''), 'placeholder' => 'Activo']) }}
+            {{ Form::label('Activo') }}
+            {{ Form::select('activo', ['1' => 'Si', '0' => 'No'], $marca->activo, ['class' => 'form-control' . ($errors->has('activo') ? ' is-invalid' : '')]) }}
             {!! $errors->first('activo', '<div class="invalid-feedback">:message</div>') !!}
         </div>
 

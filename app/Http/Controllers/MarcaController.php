@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Marca;
+use App\Models\Producto;
 use Illuminate\Http\Request;
 
 /**
@@ -43,12 +44,15 @@ class MarcaController extends Controller
      */
     public function store(Request $request)
     {
-        request()->validate(Marca::$rules);
-
-        $marca = Marca::create($request->all());
-
-        return redirect()->route('marcas.index')
-            ->with('success', 'Marca created successfully.');
+        try {
+            request()->validate(Marca::$rules);
+            $marca = Marca::create($request->all());
+            return redirect()->route('marcas.index')
+                ->with('success', 'Marca agregada con exito.');
+        } catch (\Throwable $th) {
+            return redirect()->route('marcas.index')
+            ->with('error', 'Ya existe una marca con ese nombre.');
+        }
     }
 
     /**
@@ -86,12 +90,16 @@ class MarcaController extends Controller
      */
     public function update(Request $request, Marca $marca)
     {
-        request()->validate(Marca::$rules);
+        try {
+            request()->validate(Marca::$rules);
+            $marca->update($request->all());
 
-        $marca->update($request->all());
-
-        return redirect()->route('marcas.index')
-            ->with('success', 'Marca updated successfully');
+            return redirect()->route('marcas.index')
+                ->with('success', 'Marca actualizada con exito');
+        } catch (\Throwable $th) {
+            return redirect()->route('marcas.index')
+            ->with('error', 'Ya existe una marca con ese nombre.');        
+        }
     }
 
     /**
@@ -101,9 +109,25 @@ class MarcaController extends Controller
      */
     public function destroy($id)
     {
-        $marca = Marca::find($id)->delete();
+        $marca = Marca::find($id);
+        $marca->activo = false;
+        $marca->save();
+
+        $productos = Producto::where('marca_id', $marca->id)->get();
+        foreach ($productos as $producto) {
+            $producto->activo = false;
+            $producto->save();
+        }
 
         return redirect()->route('marcas.index')
-            ->with('success', 'Marca deleted successfully');
+            ->with('success', 'Marca eliminada con exito');
+    }
+
+    //API
+
+    public function indexApi()
+    {
+        $marcas = Marca::where('activo', true)->get();
+        return $marcas;
     }
 }

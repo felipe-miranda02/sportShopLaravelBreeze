@@ -1,30 +1,31 @@
-@extends('layouts.app')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight dark:bg-gray-700">
+            {{ __('Talles') }}
+        </h2>
+    </x-slot>
+    @section('content')
+        <section class="content container-fluid">
+            <div class="row">
+                <div class="col-md-12">
 
-@section('template_title')
-    {{ __('Create') }} Tipo
-@endsection
+                    @includeif('partials.errors')
 
-@section('content')
-    <section class="content container-fluid">
-        <div class="row">
-            <div class="col-md-12">
+                    <div class="card card-default">
+                        <div class="card-header">
+                            <span class="card-title">{{ __('Agregar') }} Tipo</span>
+                        </div>
+                        <div class="card-body">
+                            <form method="POST" action="{{ route('tipos.store') }}"  role="form" enctype="multipart/form-data">
+                                @csrf
 
-                @includeif('partials.errors')
+                                @include('tipo.form')
 
-                <div class="card card-default">
-                    <div class="card-header">
-                        <span class="card-title">{{ __('Create') }} Tipo</span>
-                    </div>
-                    <div class="card-body">
-                        <form method="POST" action="{{ route('tipos.store') }}"  role="form" enctype="multipart/form-data">
-                            @csrf
-
-                            @include('tipo.form')
-
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-@endsection
+        </section>
+    @endsection
+</x-app-layout>

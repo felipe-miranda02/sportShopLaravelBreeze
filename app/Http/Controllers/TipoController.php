@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tipo;
+use App\Models\Producto;
 use Illuminate\Http\Request;
 
 /**
@@ -43,12 +44,15 @@ class TipoController extends Controller
      */
     public function store(Request $request)
     {
-        request()->validate(Tipo::$rules);
-
-        $tipo = Tipo::create($request->all());
-
-        return redirect()->route('tipos.index')
-            ->with('success', 'Tipo created successfully.');
+        try {
+            request()->validate(Tipo::$rules);
+            $tipo = Tipo::create($request->all());
+            return redirect()->route('tipos.index')
+                ->with('success', 'Tipo agregado con exito.');        
+        } catch (\Throwable $th) {
+            return redirect()->route('tipos.index')
+                ->with('error', 'Ya existe un Tipo con ese nombre.');        
+        }
     }
 
     /**
@@ -86,12 +90,17 @@ class TipoController extends Controller
      */
     public function update(Request $request, Tipo $tipo)
     {
-        request()->validate(Tipo::$rules);
+        try {
+            request()->validate(Tipo::$rules);
 
-        $tipo->update($request->all());
-
-        return redirect()->route('tipos.index')
-            ->with('success', 'Tipo updated successfully');
+            $tipo->update($request->all());
+    
+            return redirect()->route('tipos.index')
+                ->with('success', 'Tipo actualizado con exito');        
+        } catch (\Throwable $th) {
+            return redirect()->route('tipos.index')
+                ->with('error', 'Ya existe un Tipo con ese nombre.');
+        }
     }
 
     /**
@@ -101,9 +110,25 @@ class TipoController extends Controller
      */
     public function destroy($id)
     {
-        $tipo = Tipo::find($id)->delete();
+        $tipo = Tipo::find($id);
+        $tipo->activo = false;
+        $tipo->save();
+
+        $productos = Producto::where('tipo_id', $tipo->id)->get();
+        foreach ($productos as $producto) {
+            $producto->activo = false;
+            $producto->save();
+        }
 
         return redirect()->route('tipos.index')
-            ->with('success', 'Tipo deleted successfully');
+            ->with('success', 'Tipo eliminado con exito');
+    }
+
+    //API
+
+    public function indexApi()
+    {
+        $tipos = Tipo::where('activo', true)->get();
+        return $tipos;
     }
 }
